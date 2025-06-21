@@ -54,7 +54,7 @@ public class myMiniHealthSystem {
         String name = sc.nextLine();
         System.out.print("Enter Age: ");
         int age = sc.nextInt();
-        sc.nextLine(); // consume newline
+        sc.nextLine();
 
         if (age <= 0) {
             System.out.println("Invalid age.");
