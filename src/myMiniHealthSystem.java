@@ -27,7 +27,7 @@ public class myMiniHealthSystem {
             System.out.println("7. Exit");
             System.out.print("Enter choice: ");
             choice = sc.nextInt();
-            sc.nextLine();  // consume newline
+            sc.nextLine();
 
             switch (choice) {
                 case 1 -> registerPatient();
