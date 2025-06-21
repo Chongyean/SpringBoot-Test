@@ -11,7 +11,6 @@ public class myMiniHealthSystem {
     static String[] doctorSpecialties = new String[MAX_PATIENTS];
     static int[] roomNumbers = new int[MAX_PATIENTS];
     static boolean[] isAdmitted = new boolean[MAX_PATIENTS];
-
     static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
