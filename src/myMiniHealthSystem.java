@@ -76,7 +76,7 @@ public class myMiniHealthSystem {
             return;
         }
 
-        System.out.print("Enter Doctor Specialty (Heart/Lungs/Cancer/General): ");
+        System.out.print("Enter Doctor Specialty (Heart/Lungs/Cancer/General) : ");
         String specialty = sc.nextLine();
 
         if (Arrays.asList("Heart", "Lungs", "Cancer", "General").contains(specialty)) {
@@ -120,6 +120,7 @@ public class myMiniHealthSystem {
             return;
         }
 
+        //Pricing
         int roomCost = 100;
         int medicine = 50;
         int test = 25;
