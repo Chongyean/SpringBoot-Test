@@ -1,12 +1,10 @@
 package com.yean.demo.service;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import com.yean.demo.entity.Product;
 import com.yean.demo.model.BaseResponseModel;
 import com.yean.demo.model.BaseResponseWithDataModel;
 import com.yean.demo.model.ProductModel;
 import com.yean.demo.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,8 +15,11 @@ import java.util.Optional;
 
 @Service
 public class ProductService {
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     public ResponseEntity<List<BaseResponseWithDataModel>> listProducts() {
         List<Product> products = productRepository.findAll();
@@ -87,8 +88,12 @@ public class ProductService {
                 .body(new BaseResponseModel("Product deleted successfully", 200));
     }
 
-    public ResponseEntity<BaseResponseWithDataModel> searchProducts(String name) {
-        Product product = productRepository.findProductsWithFilters(name);
+    public ResponseEntity<BaseResponseWithDataModel> searchProducts(String name, double minPrice, double maxPrice) {
+        String formattedName = name != null ?
+                name.toLowerCase()
+                : null;
+
+        List<Product> product = productRepository.findProductsWithFilters(formattedName , minPrice, maxPrice);
 
         if (product == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
