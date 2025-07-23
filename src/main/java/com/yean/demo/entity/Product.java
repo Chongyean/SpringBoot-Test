@@ -24,6 +24,6 @@ public class Product {
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private String updateAt;
+    private LocalDateTime updatedAt;
 }
 
