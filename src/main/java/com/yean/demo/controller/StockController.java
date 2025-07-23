@@ -1,5 +1,16 @@
 package com.yean.demo.controller;
 
+import com.yean.demo.model.BaseResponseModel;
+import com.yean.demo.model.BaseResponseWithDataModel;
+import com.yean.demo.model.stock.StockModel;
+import com.yean.demo.model.stock.UpdateStockModel;
+import com.yean.demo.service.StockService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/v1/stocks")
 public class StockController {
     @Autowired
     private StockService stockService;
