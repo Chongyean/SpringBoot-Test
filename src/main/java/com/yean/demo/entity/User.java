@@ -18,7 +18,14 @@ public class User {
     private String address;
     private String role;
 
-    @Column(name = "create_at")
-    private LocalDateTime createAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+     @PrePersist
+    public void prePersist() {
+         LocalDateTime now = LocalDateTime.now();
+         this.createdAt = now;
+         this.updatedAt = now;
+     }
 
 }
