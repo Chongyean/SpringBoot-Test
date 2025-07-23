@@ -14,6 +14,8 @@ public class Product {
     @Column(name = "product_name")
     private String productName;
 
+    private Double price;
+
     private String description;
 
     private Double price;
