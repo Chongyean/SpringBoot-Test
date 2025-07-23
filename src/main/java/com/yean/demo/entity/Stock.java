@@ -1,5 +1,13 @@
 package com.yean.demo.entity;
 
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "stocks")
+@Data
 public class Stock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
