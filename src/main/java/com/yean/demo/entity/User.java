@@ -17,6 +17,10 @@ public class User {
     private Integer age;
     private String address;
     private String role;
+    private String password;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
