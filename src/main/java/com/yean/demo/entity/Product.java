@@ -3,6 +3,8 @@ package com.yean.demo.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "products")
 @Data
@@ -17,8 +19,6 @@ public class Product {
     private Double price;
 
     private String description;
-
-    private Double price;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

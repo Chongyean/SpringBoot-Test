@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class UserMapping {
+public class UserMapper {
 
     public User toEntity(UserDto dto) {
         User entity = new User();

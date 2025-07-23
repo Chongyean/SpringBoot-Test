@@ -1,5 +1,6 @@
 package com.yean.demo.controller;
 
+import com.yean.demo.dto.UserDto;
 import com.yean.demo.model.BaseResponseModel;
 import com.yean.demo.model.BaseResponseWithDataModel;
 import com.yean.demo.model.UserModel;
@@ -15,31 +16,33 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    //used for retrieving records
-    @GetMapping()
+    // used for retrieving records
+    @GetMapping
     public ResponseEntity<BaseResponseWithDataModel> listUsers() {
         return userService.listUsers();
     }
 
-    @GetMapping("/{user_Id}")
-    public ResponseEntity<BaseResponseWithDataModel> getUser(@PathVariable("user_Id") Long userId) {
+    @GetMapping("/{user_id}")
+    public ResponseEntity<BaseResponseWithDataModel> getUser(@PathVariable("user_id") Long userId) {
         return userService.getUser(userId);
     }
 
+    // used for creating/inserting record
+    // request body can be called request payload or shortcut "payload"
     @PostMapping
-    public ResponseEntity<BaseResponseModel> createUser(@RequestBody UserModel payload) {
+    public ResponseEntity<BaseResponseModel> createUser(@RequestBody UserDto payload) {
         return userService.createUser(payload);
     }
 
-    //endpoint -> /api/v1/users/{user_id}
+    //  endpoint -> /api/v1/users/923482348284
     @PutMapping("/{user_id}")
-    public ResponseEntity<BaseResponseModel> updateUser(@PathVariable Long user_id, @RequestBody UserModel payload) {
-        return userService.updateUser(payload,user_id);
+    public ResponseEntity<BaseResponseModel> updateUser(@PathVariable("user_id") Long userId, @RequestBody UserDto payload) {
+        return userService.updateUser(payload,userId);
     }
 
-    //Path variable
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<BaseResponseModel> deleteUser(@PathVariable Long userId) {
+    // Path variable
+    @DeleteMapping("/{user_id}")
+    public ResponseEntity<BaseResponseModel> deleteUser(@PathVariable("user_id") Long userId) {
         return userService.deleteUser(userId);
     }
 
