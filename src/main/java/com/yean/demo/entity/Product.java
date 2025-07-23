@@ -21,7 +21,7 @@ public class Product {
     private Double price;
 
     @Column(name = "created_at")
-    private String createAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private String updateAt;
