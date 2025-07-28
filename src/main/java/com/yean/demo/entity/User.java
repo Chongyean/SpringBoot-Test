@@ -13,11 +13,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
+    private String password;
     private String name;
     private Integer age;
     private String address;
     private String role;
-    private String password;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -25,11 +25,14 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-     @PrePersist
+    @PrePersist
     public void prePersist() {
-         LocalDateTime now = LocalDateTime.now();
-         this.createdAt = now;
-         this.updatedAt = now;
-     }
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 
 }

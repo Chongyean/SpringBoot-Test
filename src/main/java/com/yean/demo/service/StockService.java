@@ -1,11 +1,13 @@
 package com.yean.demo.service;
 
+import com.yean.demo.dto.stock.StockDto;
 import com.yean.demo.entity.Stock;
+import com.yean.demo.mapper.StockMapper;
 import com.yean.demo.model.BaseResponseModel;
 import com.yean.demo.model.BaseResponseWithDataModel;
-import com.yean.demo.model.stock.StockModel;
+import com.yean.demo.dto.stock.UpdateStockDto;
+import com.yean.demo.repository.ProductRepository;
 import com.yean.demo.repository.StockRepository;
-import com.yean.demo.model.stock.UpdateStockModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,19 +22,39 @@ public class StockService {
     @Autowired
     private StockRepository stockRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private StockMapper mapper;
+
     public ResponseEntity<BaseResponseWithDataModel> listStocks() {
         List<Stock> stocks = stockRepository.findAll();
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new BaseResponseWithDataModel("success","successfully retrieved stocks",stocks));
+                .body(new BaseResponseWithDataModel("success","successfully retrieved stocks",mapper.toDtoList(stocks)));
     }
 
-    public ResponseEntity<BaseResponseModel> createStock(StockModel stock) {
-        Stock stockEntity = new Stock();
+    public ResponseEntity<BaseResponseWithDataModel> getStock(Long stockId) {
+        Optional<Stock> stock = stockRepository.findById(stockId);
 
-        stockEntity.setQuantity(stock.getQuantity());
-        stockEntity.setProductId(stock.getProductId());
-        stockEntity.setCreatedAt(LocalDateTime.now());
+        if(stock.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new BaseResponseWithDataModel("fail","stock not found with id: " + stockId,null));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new BaseResponseWithDataModel("success","stock found",stock.get()));
+    }
+
+    public ResponseEntity<BaseResponseModel> createStock(StockDto stock) {
+        // product not found
+        if(!productRepository.existsById(stock.getProductId())) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new BaseResponseModel("fail","product not found: " + stock.getProductId()));
+        }
+
+        Stock stockEntity = mapper.toEntity(stock);
 
         stockRepository.save(stockEntity);
 
@@ -40,7 +62,7 @@ public class StockService {
                 .body(new BaseResponseModel("success","successfully created stock"));
     }
 
-    public ResponseEntity<BaseResponseModel> adjustQuantity(Long stockId,UpdateStockModel updateStock) {
+    public ResponseEntity<BaseResponseModel> adjustQuantity(Long stockId, UpdateStockDto updateStock) {
         Optional<Stock> existingStock = stockRepository.findById(stockId);
 
         // stock not found in DB
@@ -70,7 +92,6 @@ public class StockService {
                     .body(new BaseResponseModel("fail","invalid operation type"));
         }
 
-        stock.setUpdatedAt(LocalDateTime.now());
         stockRepository.save(stock);
 
         return ResponseEntity.status(HttpStatus.OK)

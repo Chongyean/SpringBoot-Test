@@ -1,9 +1,9 @@
 package com.yean.demo.service;
 
+import com.yean.demo.dto.product.ProductDto;
 import com.yean.demo.entity.Product;
 import com.yean.demo.model.BaseResponseModel;
 import com.yean.demo.model.BaseResponseWithDataModel;
-import com.yean.demo.model.ProductModel;
 import com.yean.demo.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +38,7 @@ public class ProductService {
                 .body(new BaseResponseWithDataModel("success","product found",product.get()));
     }
 
-    public ResponseEntity<BaseResponseModel> createProduct(ProductModel product) {
+    public ResponseEntity<BaseResponseModel> createProduct(ProductDto product) {
         Product productEntity = new Product();
 
         productEntity.setProductName(product.getName());
@@ -53,7 +52,7 @@ public class ProductService {
                 .body(new BaseResponseModel("success","successfully created product"));
     }
 
-    public ResponseEntity<BaseResponseModel> updateProduct(Long productId,ProductModel product) {
+    public ResponseEntity<BaseResponseModel> updateProduct(Long productId, ProductDto product) {
         Optional<Product> existing = productRepository.findById(productId);
 
         if(existing.isEmpty()) {

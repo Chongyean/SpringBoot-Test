@@ -1,8 +1,8 @@
 package com.yean.demo.controller;
 
-import com.yean.demo.dto.UserDto;
 import com.yean.demo.model.BaseResponseModel;
 import com.yean.demo.model.BaseResponseWithDataModel;
+import com.yean.demo.dto.UserDto;
 import com.yean.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,9 +1,9 @@
 package com.yean.demo.controller;
 
+import com.yean.demo.dto.stock.StockDto;
 import com.yean.demo.model.BaseResponseModel;
 import com.yean.demo.model.BaseResponseWithDataModel;
-import com.yean.demo.model.stock.StockModel;
-import com.yean.demo.model.stock.UpdateStockModel;
+import com.yean.demo.dto.stock.UpdateStockDto;
 import com.yean.demo.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +20,18 @@ public class StockController {
         return stockService.listStocks();
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<BaseResponseWithDataModel> getStock(@PathVariable("id") Long stockId) {
+        return stockService.getStock(stockId);
+    }
+
     @PostMapping
-    public ResponseEntity<BaseResponseModel> createStock(@RequestBody StockModel payload) {
+    public ResponseEntity<BaseResponseModel> createStock(@RequestBody StockDto payload) {
         return stockService.createStock(payload);
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<BaseResponseModel> adjustQuantity(@PathVariable("id") Long stockId,@RequestBody UpdateStockModel payload) {
+    public ResponseEntity<BaseResponseModel> adjustQuantity(@PathVariable("id") Long stockId,@RequestBody UpdateStockDto payload) {
         return stockService.adjustQuantity(stockId,payload);
     }
 

@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class BaseResponseModel {
-
     private String status;
     private String message;
 
