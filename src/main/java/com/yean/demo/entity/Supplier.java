@@ -4,26 +4,30 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Data
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "suppliers")
+@Data
+public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
-    private String password;
     private String name;
-    private Integer age;
     private String address;
-    private String role;
+    // rating, e.g. 4/5
+    private String rating;
+    private String phone;
+    private String email;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "supplier", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Stock> stocks;
 
     @PrePersist
     public void prePersist() {

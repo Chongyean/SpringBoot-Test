@@ -1,11 +1,12 @@
 package com.yean.demo.mapper;
 
-import com.yean.demo.dto.UserDto;
-import com.yean.demo.dto.UserResponseDto;
+import com.yean.demo.dto.user.ChangePasswordUserDto;
+import com.yean.demo.dto.user.UpdateUserDto;
+import com.yean.demo.dto.user.UserDto;
+import com.yean.demo.dto.user.UserResponseDto;
 import com.yean.demo.entity.User;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,20 +23,18 @@ public class UserMapper {
         entity.setRole(dto.getRole());
         entity.setAddress(dto.getAddress());
         entity.setEmail(dto.getEmail());
-        entity.setCreatedAt(LocalDateTime.now());
 
         return entity;
     }
 
-    public void updateEntityFromDto(User entity, UserDto dto) {
-        if(entity == null || dto == null) {
+    public void updateEntityFromDto(User entity, UpdateUserDto dto) {
+        if (entity == null || dto == null) {
             return;
         }
 
         entity.setName(dto.getName());
-        entity.setEmail(dto.getEmail());
-        entity.setPassword(dto.getPassword());
         entity.setRole(dto.getRole());
+        entity.setAge(dto.getAge());
         entity.setAddress(dto.getAddress());
     }
 
@@ -48,17 +47,23 @@ public class UserMapper {
         dto.setAge(entity.getAge());
         dto.setAddress(entity.getAddress());
         dto.setRole(entity.getRole());
+        dto.setCreatedAt(entity.getCreatedAt());
+        dto.setUpdatedAt(entity.getUpdatedAt());
 
         return dto;
     }
 
     public List<UserResponseDto> toDtoList(List<User> entities) {
-        if(entities == null || entities.isEmpty()) {
+        if (entities == null || entities.isEmpty()) {
             return new ArrayList<>();
         }
 
         return entities.stream()
-                .map(this::toDto)
+                .map(user -> this.toDto(user))
                 .collect(Collectors.toList());
+    }
+
+    public void updateEntityChangePassword(User entity, String password) {
+        entity.setPassword(password);
     }
 }

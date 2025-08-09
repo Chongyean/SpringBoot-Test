@@ -1,24 +1,26 @@
-package com.yean.demo.dto.stock;
+package com.yean.demo.dto.order;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
-public class StockResponseDto {
-    @JsonProperty("stock_id")
+public class OrderResponseDto {
+    @JsonProperty("order_id")
     private Long id;
 
-    @JsonProperty("product_id")
-    private Long productId;
+    private String status;
 
-    @JsonProperty("qauntity")
-    private Integer qty;
+    private Double total;
 
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
 
     @JsonProperty("updated_at")
     private LocalDateTime updatedAt;
+
+    @JsonProperty("items")
+    private List<OrderItemResponseDto> items;
 }

@@ -1,23 +1,24 @@
 package com.yean.demo.entity;
 
+import com.yean.demo.common.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Data
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "orders")
+@Data
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
-    private String password;
-    private String name;
-    private Integer age;
-    private String address;
-    private String role;
+
+    private String status = OrderStatus.PENDING.name();
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> items;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -26,12 +27,12 @@ public class User {
     private LocalDateTime updatedAt;
 
     @PrePersist
-    public void prePersist() {
+    private void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
 
     @PreUpdate
-    public void preUpdate() {
+    private void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 }

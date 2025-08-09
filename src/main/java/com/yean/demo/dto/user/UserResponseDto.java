@@ -1,12 +1,13 @@
-package com.yean.demo.dto;
-
+package com.yean.demo.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
-@JsonPropertyOrder({"user_id", "username", "age", "location", "email", "role"})
+@JsonPropertyOrder({"user_id","username","email","age","location","role","created_at","updated_at"})
 public class UserResponseDto {
     @JsonProperty("user_id")
     private Long id;
@@ -22,9 +23,8 @@ public class UserResponseDto {
     private String role = "USER";
 
     @JsonProperty("created_at")
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     @JsonProperty("updated_at")
-    private String updatedAt;
-
+    private LocalDateTime updatedAt;
 }

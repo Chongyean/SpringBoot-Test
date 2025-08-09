@@ -2,20 +2,22 @@ package com.yean.demo.mapper;
 
 import com.yean.demo.dto.stock.StockDto;
 import com.yean.demo.dto.stock.StockResponseDto;
+import com.yean.demo.entity.Product;
 import com.yean.demo.entity.Stock;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 public class StockMapper {
-    public Stock toEntity(StockDto dto) {
+    public Stock toEntity(StockDto dto, Product product) {
         Stock entity = new Stock();
 
         entity.setQuantity(dto.getQuantity());
-        entity.setProductId(dto.getProductId());
+        entity.setProduct(product);
 
         return entity;
     }
@@ -24,7 +26,7 @@ public class StockMapper {
         StockResponseDto dto = new StockResponseDto();
 
         dto.setId(entity.getId());
-        dto.setProductId(entity.getProductId());
+        dto.setProductId(entity.getProduct().getId());
         dto.setQty(entity.getQuantity());
         dto.setCreatedAt(entity.getCreatedAt());
         dto.setUpdatedAt(entity.getUpdatedAt());
@@ -33,12 +35,12 @@ public class StockMapper {
     }
 
     public List<StockResponseDto> toDtoList(List<Stock> entities) {
-        if(entities == null || entities.isEmpty()) {
+        if (entities == null || entities.isEmpty()) {
             return new ArrayList<>();
         }
 
         return entities.stream()
-                .map(this::toDto)
+                .map(stock -> this.toDto(stock))
                 .collect(Collectors.toList());
     }
 }

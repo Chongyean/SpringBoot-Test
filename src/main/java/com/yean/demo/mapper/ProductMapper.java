@@ -27,6 +27,7 @@ public class ProductMapper {
         dto.setProductId(entity.getId());
         dto.setProductName(entity.getProductName());
         dto.setPrice(entity.getPrice());
+        dto.setTotalStock(entity.getTotalStock());
         dto.setDescription(entity.getDescription());
         dto.setCreatedAt(entity.getCreatedAt());
         dto.setUpdatedAt(entity.getUpdatedAt());
@@ -40,7 +41,7 @@ public class ProductMapper {
         }
 
         return entities.stream()
-                .map(this::toDto)
+                .map(product -> this.toDto(product))
                 .collect(Collectors.toList());
     }
 }

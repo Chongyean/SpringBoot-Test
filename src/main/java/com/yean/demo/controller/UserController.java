@@ -1,13 +1,15 @@
 package com.yean.demo.controller;
 
+import com.yean.demo.dto.user.ChangePasswordUserDto;
+import com.yean.demo.dto.user.UpdateUserDto;
 import com.yean.demo.model.BaseResponseModel;
 import com.yean.demo.model.BaseResponseWithDataModel;
-import com.yean.demo.dto.UserDto;
+import com.yean.demo.dto.user.UserDto;
 import com.yean.demo.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -29,13 +31,13 @@ public class UserController {
     // used for creating/inserting record
     // request body can be called request payload or shortcut "payload"
     @PostMapping
-    public ResponseEntity<BaseResponseModel> createUser(@RequestBody UserDto payload) {
+    public ResponseEntity<BaseResponseModel> createUser(@Valid @RequestBody UserDto payload) {
         return userService.createUser(payload);
     }
 
     //  endpoint -> /api/v1/users/923482348284
     @PutMapping("/{user_id}")
-    public ResponseEntity<BaseResponseModel> updateUser(@PathVariable("user_id") Long userId, @RequestBody UserDto payload) {
+    public ResponseEntity<BaseResponseModel> updateUser(@PathVariable("user_id") Long userId,@Valid @RequestBody UpdateUserDto payload) {
         return userService.updateUser(payload,userId);
     }
 
@@ -45,4 +47,9 @@ public class UserController {
         return userService.deleteUser(userId);
     }
 
+    // change password
+    @PatchMapping("/{user_id}/change-password")
+    public ResponseEntity<BaseResponseModel> changePassword(@PathVariable("user_id") Long userId,@RequestBody ChangePasswordUserDto payload) {
+        return userService.changePassword(payload, userId);
+    }
 }

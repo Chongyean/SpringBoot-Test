@@ -1,20 +1,24 @@
 package com.yean.demo.service;
 
-import com.yean.demo.dto.UserResponseDto;
+import com.yean.demo.dto.user.ChangePasswordUserDto;
+import com.yean.demo.dto.user.UpdateUserDto;
+import com.yean.demo.dto.user.UserResponseDto;
 import com.yean.demo.entity.User;
+import com.yean.demo.exception.model.DuplicateResourceException;
+import com.yean.demo.exception.model.ResourceNotFoundException;
 import com.yean.demo.mapper.UserMapper;
 import com.yean.demo.model.BaseResponseModel;
 import com.yean.demo.model.BaseResponseWithDataModel;
-import com.yean.demo.dto.UserDto;
+import com.yean.demo.dto.user.UserDto;
 import com.yean.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
+
 
 @Service
 public class UserService {
@@ -30,64 +34,86 @@ public class UserService {
         List<UserResponseDto> dtos = mapper.toDtoList(users);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new BaseResponseWithDataModel("success","successfully retrieve users",dtos));
+                .body(new BaseResponseWithDataModel("success", "successfully retrieve users", dtos));
     }
 
     public ResponseEntity<BaseResponseWithDataModel> getUser(Long userId) {
-        Optional<User> user = userRepository.findById(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("user not found with id : " + userId));
 
-        if(user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new BaseResponseWithDataModel("fail","user not found with id : " + userId,null));
-        }
-
-        UserResponseDto dto = mapper.toDto(user.get());
+        UserResponseDto dto = mapper.toDto(user);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new BaseResponseWithDataModel("success","user found",dto));
+                .body(new BaseResponseWithDataModel("success", "user found", dto));
     }
 
     public ResponseEntity<BaseResponseModel> createUser(UserDto payload) {
+        // validate if username is existed
+        if (userRepository.existsByName(payload.getName())) {
+            throw new DuplicateResourceException("username is already existed");
+        }
+
+        // validate if email is existed
+        if (userRepository.existsByEmail(payload.getEmail())) {
+            throw new DuplicateResourceException("email is already existed");
+        }
+
         User user = mapper.toEntity(payload);
 
         userRepository.save(user);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new BaseResponseModel("success","successfully created user"));
+                .body(new BaseResponseModel("success", "successfully created user"));
     }
 
-    public ResponseEntity<BaseResponseModel> updateUser(UserDto payload, Long userId) {
-        Optional<User> existing = userRepository.findById(userId);
-
-        // if user not found, then response 404
-        if(existing.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new BaseResponseModel("fail","user not found with id: " + userId));
-        }
+    public ResponseEntity<BaseResponseModel> updateUser(UpdateUserDto payload, Long userId) {
+        User existing = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("user not found with id: " + userId));
 
         // modify values
-        User updatedUser = existing.get();
-        mapper.updateEntityFromDto(updatedUser,payload);
+        mapper.updateEntityFromDto(existing, payload);
 
-        userRepository.save(updatedUser);
+        userRepository.save(existing);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new BaseResponseModel("success","successfully updated user"));
+                .body(new BaseResponseModel("success", "successfully updated user"));
     }
 
     public ResponseEntity<BaseResponseModel> deleteUser(Long userId) {
         // if user not found, then response 404
-        if(!userRepository.existsById(userId)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new BaseResponseModel("fail","user not found with id: " + userId));
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("user not found with id: " + userId);
         }
 
-        // user found, then delete
+        // user found , then delete
         userRepository.deleteById(userId);
 
         // 200 OK
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new BaseResponseModel("success","successfully deleted user"));
+                .body(new BaseResponseModel("success", "successfully deleted user"));
+    }
+
+    public ResponseEntity<BaseResponseModel> changePassword(ChangePasswordUserDto payload, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("user not found with id: " + userId));
+
+        // old password is incorrect
+        if (!Objects.equals(user.getPassword(), payload.getOldPassword())) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                    .body(new BaseResponseModel("fail", "old password is incorrect, please enter the correct password"));
+        }
+
+        // new password and confirm password not match
+        if (!Objects.equals(payload.getNewPassword(), payload.getConfirmPassword())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new BaseResponseModel("fail", "new password and confirm password must be the same"));
+        }
+
+        mapper.updateEntityChangePassword(user, payload.getNewPassword());
+        userRepository.save(user);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new BaseResponseModel("success", "successfully changed password"));
     }
 }
